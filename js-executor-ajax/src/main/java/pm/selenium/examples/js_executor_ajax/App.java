@@ -12,8 +12,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 
 public class App {
 	
-	private static final String BASE_URL = "https://httpbin.org";
-	
 	private final WebDriver driver;
 	private final JavascriptExecutor jse;
 	
@@ -28,16 +26,16 @@ public class App {
 	
 	public void run() {
 		try {
-			driver.navigate().to(BASE_URL);
+			driver.navigate().to("https://httpbin.org");
 			
 			Map<?,?> response = null; 
 			
 			// GET request with fetch()
-			response = fetch(GET, BASE_URL + "/get", Map.of("param1", "value1", "param2", "value2"));
+			response = fetch(GET, "/get", Map.of("param1", "value1", "param2", "value2"));
 			System.out.println(response);
 			
 			// POST request with fetch()
-			response = fetch(POST, BASE_URL + "/post", Map.of("param1", "value1", "param2", "value2"));
+			response = fetch(POST, "/post", Map.of("param1", "value1", "param2", "value2"));
 			System.out.println(response);
 			
 		} finally {
