@@ -1,0 +1,1 @@
+Example of executing an AJAX request with Selenium's JavaScript executor.
