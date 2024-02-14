@@ -38,6 +38,14 @@ public class App {
 			response = fetch(POST, "/post", Map.of("param1", "value1", "param2", "value2"));
 			System.out.println(response);
 			
+			// GET request with XMLHttpRequest
+			response = xhr(GET, "/get", Map.of("param1", "value1", "param2", "value2"));
+			System.out.println(response);
+			
+			// POST request with XMLHttpRequest
+			response = xhr(POST, "/post", Map.of("param1", "value1", "param2", "value2"));
+			System.out.println(response);
+			
 		} finally {
 			this.driver.quit();
 		}
@@ -63,5 +71,30 @@ public class App {
 		""";
 		
 		return (Map<?,?>)jse.executeScript(script, method.name(), url, params);
+	}
+	
+	private Map<?,?> xhr(HttpMethod method, String url, Map<String, String> params) {
+		var script = """
+			const method = arguments[0];
+			const url = arguments[1];
+			const params = arguments[2];
+			const callback = arguments[arguments.length - 1];
+			
+			const queryParams = (method === 'GET') ? 
+			  '?' + Object.keys(params).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join('&') : '';
+			
+			const xhr = new XMLHttpRequest();
+			xhr.responseType = "json";
+			xhr.onreadystatechange = () => {
+			  if (xhr.readyState === XMLHttpRequest.DONE) {
+			    callback(xhr.response);
+			  }
+			}
+			
+			xhr.open(method, url + queryParams);
+			xhr.send((method === 'POST') ? JSON.stringify(params) : undefined);
+		""";
+		
+		return (Map<?,?>)jse.executeAsyncScript(script, method.name(), url, params);
 	}
 }
